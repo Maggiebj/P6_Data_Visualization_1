@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    
+  <head>
+    <meta charset="utf-8">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+    
+    <style>
+       h2 {
+        text-align: center;
+        color: black;
+      }
+	    
+		body {                     
+                width: 960px;
+                margin: 0 auto;
+            }
+    </style>
+
+    <script type="text/javascript">
+      function draw(data) {
+      
+      /*
+        D3.js setup code
+      */
+
+          "use strict";
+          var margin = 75,
+              width = 1200 - margin,
+              height = 550 - margin;
+          d3.select("body")
+              .append("h2")
+              .text("Passengers with higher fares were more likely to survive ")
+			  .style('color','black')	
+			  .style('backgroud-color','white');
+          
+		  var svg = d3.select("body")
+              .append("svg")
+              .attr("width", width)
+              .attr("height", height)
+              .append('g')
+              .attr('class','chart');
+		
+		  svg.selectAll("explanatory_text")
+            .data(["Titanic dataset contains demographics and passenger information from a subset of the 2224 passengers and crew on board the Titanic. ","I aggregated the data into age groups and calculated the mean of fare for survived and perished in each age group.","The data set is to discover the positive correlation of meanfare and survival. Passengers with higher fares were more likely to survive."])
+            .enter()
+            .append("text")
+              .attr("x", 100)
+              .attr("y", function(d, i) { return 30 + i *14; } )
+              .style("font-size", "11px")
+              .style("color", "Black")
+              .style("font-family", "sans-serif")
+              .text(function (d) { return d; });
+
+	/*
+        Dimple code
+      */
+		  
+		
+		  
+		  var myChart = new dimple.chart(svg, data.forEach(function(d){
+		  return d['Agegroup','Survived','mean'];
+		  }));
+		  myChart.setBounds(80, 100, width-400, height-200); //x,y,width,height
+		  var y = myChart.addMeasureAxis("y", "mean");
+		  var myAxis=myChart.addCategoryAxis("x", ["Agegroup",'Survived']);
+		  myAxis.addOrderRule(['0','10','20','30','40','50','60','70','80','90','null']);
+		  //myChart.addColorAxis("Survived",["#FF0000", "#00FF00"]);
+          myChart.assignColor("0","#FF0000");
+	      myChart.assignColor("1","#00FF00");	          	  
+          var mySeries = myChart.addSeries('Survived', dimple.plot.line);
+		  var myLegend=myChart.addLegend(800, 90, 100, 100, "right");
+		  myChart.draw();
+		  
+		  myLegend._getEntries = function() {
+                    var orderedValues = ["0", "1"];
+                    var newNames = {
+                        "0" : "Perished",
+                        "1" : "Survived"
+                    };
+                    var entries = [];
+                    orderedValues.forEach(function(v) {
+                        entries.push({
+                            key : newNames[v],
+                            fill : myChart.getColor(v).fill,
+                            stroke : myChart.getColor(v).stroke,
+                            opacity : myChart.getColor(v).opacity,
+                            series : [mySeries],
+                            aggField : [v]
+                        });
+                    }, this);
+                    return entries;
+                };
+	     
+		 d3.select("#btn1").on("click", function() {
+		     svg.selectAll("chart").remove();
+			 myChart.data.forEach(function(d){return d['Agegroup','Survived','mean']});
+		     //myChart.assignColor('0','#FF0000','black','0.2');
+			 //myChart.assignColor('1','#00FF00','black','0.2');
+			 //myChart.addSeries('Survived', dimple.plot.line);
+			 debugger;
+			 //myChart.draw(200);
+			 
+                    });	
+					
+		  
+		  myChart.legends = [];
+		  
+		  svg.selectAll('title_text')
+		   .data(['Click legend to Show/Hide'])
+		   .enter()
+		   .append('text')
+		     .attr('x',750)
+			 .attr('y',80)
+			 .text(function(d){return d;});
+			 
+		  // Get a unique list of Owner values to use when filtering
+        var filterValues = dimple.getUniqueValues(data, "Survived");
+        // Get all the rectangles from our now orphaned legend
+        myLegend.shapes.selectAll("rect")
+          // Add a click event to each rectangle
+          .on("click", function (e) {
+            // This indicates whether the item is already visible or not
+            var hide = false;
+            var newFilters = [];
+            // If the filters contain the clicked shape hide it
+            filterValues.forEach(function (f) {
+              if (f === e.aggField[0]) {
+                
+				hide = true;
+              } else {
+                newFilters.push(f);
+              }
+            //console.log(e);
+			
+			});
+            // Hide the shape or show it
+            if (hide) {
+              d3.select(this).style("opacity", 0.2);
+            } else {
+              newFilters.push(e.aggField[0]);
+              d3.select(this).style("opacity", 0.8);
+            }
+            // Update the filters
+            filterValues = newFilters;
+			//debugger;
+            // Filter the data
+            myChart.data = dimple.filterData(data, "Survived", filterValues);
+            // Passing a duration parameter makes the chart animate. Without
+            // it there is no transition
+            myChart.draw(800);
+          });
+		  
+		
+        };
+
+    </script>
+  </head>
+<body>
+	<button id="btn1">Mean</button>
+    <button id="btn2">Median</button>
+  <script type="text/javascript">
+  /*
+    Use D3 (not dimple.js) to load the CSVfile
+    and pass the contents of it to the draw function
+    */
+  d3.csv("titanic_agegroup.csv", draw);
+  
+  
+  </script>
+</body>
+</html>
