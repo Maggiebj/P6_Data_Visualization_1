@@ -43,37 +43,38 @@
               .attr('class','chart');
 		
 		  svg.selectAll("explanatory_text")
-            .data(["Titanic dataset contains demographics and passenger information from a subset of the 2224 passengers and crew on board the Titanic. ","I aggregated the data into age groups and calculated the mean of fare for survived and perished in each age group.","The data set is to discover the positive correlation of meanfare and survival. Passengers with higher fares were more likely to survive."])
+            .data(["Titanic dataset contains demographics and passenger information from a subset of the 2224 passengers and crew on board the Titanic. ","I aggregated the data into age groups and calculated the statistical summary of fare for survived and perished in each age group.","The data set is to discover the positive correlation of fare and survival.","In most cases, Passengers with higher fares were more likely to survive, with exceptions of children under 10 years old.","Click UPPER BUTTON to switch each statistical summary plot."])
             .enter()
             .append("text")
-              .attr("x", 100)
-              .attr("y", function(d, i) { return 30 + i *14; } )
-              .style("font-size", "11px")
+              .attr("x", 5)
+              .attr("y", function(d, i) { return 30 + i *16; } )
+              .style("font-size", "14px")
               .style("color", "Black")
               .style("font-family", "sans-serif")
               .text(function (d) { return d; });
 
 	/*
         Dimple code
-      */
-		  
-		
-		  
-		  var myChart = new dimple.chart(svg, data.forEach(function(d){
-		  return d['Agegroup','Survived','mean'];
-		  }));
+      */		  
+		  var myChart = new dimple.chart(svg, data);
 		  myChart.setBounds(80, 100, width-400, height-200); //x,y,width,height
-		  var y = myChart.addMeasureAxis("y", "mean");
+		  var y = myChart.addMeasureAxis("y", "var");
+		  data.forEach(function(d){
+		  d['var']=d['mean'];
+		  });
+		  var lable='Mean Fare';
+		  y.title=lable;
 		  var myAxis=myChart.addCategoryAxis("x", ["Agegroup",'Survived']);
+		  myAxis.title = "Age Group/Survived";
 		  myAxis.addOrderRule(['0','10','20','30','40','50','60','70','80','90','null']);
 		  //myChart.addColorAxis("Survived",["#FF0000", "#00FF00"]);
           myChart.assignColor("0","#FF0000");
 	      myChart.assignColor("1","#00FF00");	          	  
-          var mySeries = myChart.addSeries('Survived', dimple.plot.line);
-		  var myLegend=myChart.addLegend(800, 90, 100, 100, "right");
-		  myChart.draw();
+          var mySeries = myChart.addSeries('Survived', dimple.plot.bar);
+		  var myLegend=myChart.addLegend(800, 120, 100, 100, "right");
 		  
-		  myLegend._getEntries = function() {
+		  //debugger;
+		   myLegend._getEntries = function() {
                     var orderedValues = ["0", "1"];
                     var newNames = {
                         "0" : "Perished",
@@ -92,19 +93,71 @@
                     }, this);
                     return entries;
                 };
-	     
-		 d3.select("#btn1").on("click", function() {
-		     svg.selectAll("chart").remove();
-			 myChart.data.forEach(function(d){return d['Agegroup','Survived','mean']});
-		     //myChart.assignColor('0','#FF0000','black','0.2');
-			 //myChart.assignColor('1','#00FF00','black','0.2');
-			 //myChart.addSeries('Survived', dimple.plot.line);
+		 myChart.draw();
+	     //debugger;
+		 d3.select("#btn0").on("click", function() {
+		    // svg.selectAll("path").remove();
+			 data.forEach(function(d){
+			 d['var']=d['min'];
+			 });
+			 y.title='Min Fare';
+			 myChart.data=data;
+			 myChart.draw();
 			 debugger;
-			 //myChart.draw(200);
+			 });	
 			 
+		d3.select("#btn1").on("click", function() {
+		    // svg.selectAll("path").remove();
+			 data.forEach(function(d){
+			 d['var']=d['25%'];
+			 });
+			 y.title='25% of Fare';
+			 myChart.data=data;
+			 myChart.draw();	
+			 });	
+			 
+		 d3.select("#btn2").on("click", function() {
+		    // svg.selectAll("path").remove();
+			 data.forEach(function(d){
+			 d['var']=d['mean'];
+			 });
+			 y.title='Mean Fare';
+			 myChart.data=data;
+			 myChart.draw();
+	 
                     });	
 					
-		  
+		  d3.select("#btn3").on("click", function() {
+		    // svg.selectAll("path").remove();
+			 data.forEach(function(d){
+			 d['var']=d['50%'];
+			 });
+			 y.title='Median  of Fare';
+			 myChart.data=data;
+			 myChart.draw();
+		 
+                    });	
+			d3.select("#btn4").on("click", function() {
+		    // svg.selectAll("path").remove();
+			 data.forEach(function(d){
+			 d['var']=d['75%'];
+			 });
+			 y.title='75% of Fare';
+			 myChart.data=data;
+			 myChart.draw();
+			 });	
+			 
+			d3.select("#btn5").on("click", function() {
+		    // svg.selectAll("path").remove();
+			 data.forEach(function(d){
+			 d['var']=d['max'];
+			 });
+			 y.title='Max Fare';
+			 myChart.data=data;
+			 myChart.draw();
+		 
+                    });	
+					
 		  myChart.legends = [];
 		  
 		  svg.selectAll('title_text')
@@ -112,7 +165,7 @@
 		   .enter()
 		   .append('text')
 		     .attr('x',750)
-			 .attr('y',80)
+			 .attr('y',100)
 			 .text(function(d){return d;});
 			 
 		  // Get a unique list of Owner values to use when filtering
@@ -158,8 +211,12 @@
     </script>
   </head>
 <body>
-	<button id="btn1">Mean</button>
-    <button id="btn2">Median</button>
+	<button id="btn0">Min</button>
+	<button id="btn1">25%</button>
+	<button id="btn2">Mean</button>
+    <button id="btn3">Median</button>
+	<button id="btn4">75%</button>
+	<button id="btn5">Max</button>
   <script type="text/javascript">
   /*
     Use D3 (not dimple.js) to load the CSVfile
