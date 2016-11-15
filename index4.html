@@ -43,7 +43,7 @@
               .attr('class','chart');
 		
 		  svg.selectAll("explanatory_text")
-            .data(["Titanic dataset contains demographics and passenger information from a subset of the 2224 passengers and crew on board the Titanic. ","I aggregated the data into age groups and calculated the statistical summary of fare for survived and perished in each age group.","The data set is to discover the positive correlation of fare and survival.","In most cases, Passengers with higher fares were more likely to survive, with exceptions of children under 10 years old.","Click UPPER BUTTON to switch each statistical summary plot."])
+            .data(["Titanic dataset contains demographics and passenger information from a subset of the 2224 passengers and crew on board the Titanic. ","I aggregated the data into age groups and calculated the statistical summary of fare for survived and perished in each age group.","The data set is to discover the positive correlation of fare and survival.","In most cases, Passengers with higher fares were more likely to survive, with exceptions of children under 10 years old and old people 70s-80s ages.","Click UPPER BUTTON to switch each age group."])
             .enter()
             .append("text")
               .attr("x", 5)
@@ -59,11 +59,15 @@
 		  var myChart = new dimple.chart(svg, data);
 		  myChart.setBounds(80, 100, width-400, height-200); //x,y,width,height
 		  var y = myChart.addMeasureAxis("y", "Fare");
-		  
+		  data.forEach(function(d){
+		  if(d['Survived']==="0"){d["Survived"]="Perished";}
+		  else if(d["Survived"]==="1"){d["Survived"]="Survived";}
+		  });
 		  var x=myChart.addCategoryAxis("x", "Survived");
 		  x.title = "Perished/Survived";
-          myChart.assignColor("0","#FF0000");
-	      myChart.assignColor("1","#00FF00");	          	  
+		  x.addOrderRule(['Survived','Perished']);
+          //myChart.assignColor("0","#FF0000");
+	      //myChart.assignColor("1","#00FF00");	          	  
           var min= myChart.addSeries('Min', dimple.plot.bubble,[x,y]);
 		  min.aggregate=dimple.aggregateMethod.min;
 		  var avg= myChart.addSeries('Avg', dimple.plot.bubble,[x,y]);
@@ -72,9 +76,9 @@
 		  max.aggregate=dimple.aggregateMethod.max;
 		  var myLegend=myChart.addLegend(800, 120, 100, 100, "right");
 		  myChart.draw();
-		  debugger;
+		  
 		  //debugger;
-		  /*
+		  /* 
 		   myLegend._getEntries = function() {
                     var orderedValues = ["0", "1"];
                     var newNames = {
@@ -109,7 +113,7 @@
 			 var data_sub=dimple.filterData(data,'Agegroup',"0");
 			 
 			 myChart.data=data_sub;
-			 debugger;
+			 
 			 myChart.draw();	
 			 });	
 			 
@@ -118,47 +122,43 @@
 			var data_sub=dimple.filterData(data,'Agegroup',"10");
 			 
 			 myChart.data=data_sub;
-			 debugger;
+			 
 			 myChart.draw();
 	 
                     });	
 					
 		  d3.select("#btn3").on("click", function() {
 		    
-			 var data_sub=dimple.filterData(data,'Agegroup',["20","30","40","50"]);
+			 var data_sub=dimple.filterData(data,'Agegroup',["20","30","40","50","60"]);
 			 myChart.data=data_sub;
-			 debugger;
+			
 			 myChart.draw();
 			 
 		 
                     });	
 			d3.select("#btn4").on("click", function() {
 		    
-			var data_sub=dimple.filterData(data,'Agegroup',["60","70","80"]);
+			var data_sub=dimple.filterData(data,'Agegroup',["70","80"]);
 			
 			 myChart.data=data_sub;
-			 debugger;
+			 
 			 myChart.draw();
 			 });	
 			 
-			d3.select("#btn5").on("click", function() {
-		    
-			var data_sub=dimple.filterData(data,'Agegroup',["null"]);
-			 myChart.data=data_sub;
-			 debugger;
-			 myChart.draw();
-			 });	
+				
 					
 		  myChart.legends = [];
 		  
+		  /*
 		  svg.selectAll('title_text')
-		   .data(['Click legend to Show/Hide'])
+		   .data(['Legend'])
 		   .enter()
 		   .append('text')
 		     .attr('x',750)
 			 .attr('y',100)
 			 .text(function(d){return d;});
-			 
+		
+
 		  // Get a unique list of Owner values to use when filtering
         var filterValues = ['Min','Avg','Max'];
         // Get all the rectangles from our now orphaned legend
@@ -190,20 +190,28 @@
             filterValues = newFilters;
 			//debugger;
             // Filter the data
-			for (var i=0;i<3;i+=1){
-			if (filterValues[i]==='Max'){var max= myChart.addSeries('Max', dimple.plot.bubble,[x,y]);
-		     max.aggregate=dimple.aggregateMethod.max;}
-			 else if (filterValues[i]==='Avg'){var max= myChart.addSeries('Avg', dimple.plot.bubble,[x,y]);
-		     avg.aggregate=dimple.aggregateMethod.avg;}
-            else if (filterValues[i]==='Min'){var max= myChart.addSeries('Min', dimple.plot.bubble,[x,y]);
-		     min.aggregate=dimple.aggregateMethod.min;}
+			for (var i=0; i<filterValues.length; i+=1){
+			debugger;
+			if(typeof myChart.series[i].shapes != 'undefined'){
+				myChart.series[i].shapes.remove();
+				myChart.series.splice(i,1);
+			}
+			if (filterValues[i]==='Max'){
+				var max= myChart.addSeries('Max', dimple.plot.bubble,[x,y]);
+				max.aggregate=dimple.aggregateMethod.max;}
+			 else if (filterValues[i]==='Avg'){
+				var avg= myChart.addSeries('Avg', dimple.plot.bubble,[x,y]);
+				avg.aggregate=dimple.aggregateMethod.avg;}
+            else if (filterValues[i]==='Min'){
+				var min= myChart.addSeries('Min', dimple.plot.bubble,[x,y]);
+				min.aggregate=dimple.aggregateMethod.min;}
 			 }
             // Passing a duration parameter makes the chart animate. Without
             // it there is no transition
             myChart.draw(800);
           });
 		  
-		
+	*/	
         };
 
     </script>
@@ -212,9 +220,9 @@
 	<button id="btn0">ALL</button>
 	<button id="btn1">age 0s</button>
 	<button id="btn2">age 10s</button>
-    <button id="btn3">age 20s-50s</button>
-	<button id="btn4">age 60s-80s</button>
-	<button id="btn5">age null</button>
+    <button id="btn3">age 20s-60s</button>
+	<button id="btn4">age 70s-80s</button>
+	
   <script type="text/javascript">
   /*
     Use D3 (not dimple.js) to load the CSVfile
