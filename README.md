@@ -42,3 +42,4 @@ some dimple and d3 examples and documents:
 http://dimplejs.org/advanced_examples_viewer.html?id=advanced_interactive_legends 
 https://github.com/PMSI-AlignAlytics/dimple/wiki/dimple.axis#properties-1
 https://github.com/d3/d3/blob/master/API.md#arrays-d3-array
+https://discussions.udacity.com
