@@ -7,15 +7,14 @@
     <script src='http://dimplejs.org/dist/dimple.v2.0.0.min.js'></script>
     
     <style>
-       h2 {
+      h2 {
         text-align: center;
         color: black;
-       }
-	    
-		body {                     
-          width: 960px;
-          margin: 0 auto;
-        }
+      }
+	  body {                     
+        width: 960px;
+        margin: 0 auto;
+      }
     </style>
 
     <script type='text/javascript'>
@@ -25,7 +24,7 @@
         D3.js setup code
       */
 
-          'use strict';
+        'use strict';
         var margin = 75,
           width = 1200 - margin,
           height = 550 - margin;
@@ -33,15 +32,13 @@
           .append('h2')
           .text('Passengers with higher fares were more likely to survive ')
 		  .style('color','black')	
-		  .style('backgroud-color','white');
-          
+		  .style('backgroud-color','white');          
 		var svg = d3.select('body')
           .append('svg')
           .attr('width', width)
           .attr('height', height)
           .append('g')
-          .attr('class','chart');
-		
+          .attr('class','chart');		
 		svg.selectAll('explanatory_text')
            .data(['Titanic dataset contains demographics and passenger information from a subset of the 2224 passengers and crew on board the Titanic. ','I aggregated the data into age groups and fare groups and calculate survived percentage in each group.','The data set is to discover the positive correlation of fare and survival.','In most cases, Passengers with higher fares were more likely to survive, with exceptions of children under 10 years old and old people of 60s-80s ages.','Click UPPER BUTTON to switch each age group.'])
            .enter()
@@ -67,72 +64,60 @@
 		var mySeries = myChart.addSeries(null, dimple.plot.bar);		  
 		myChart.draw();
 		  
-		 
+		/*
+		  when click buttons, filter each agegroup and draw
+		*/
 		d3.select('#btn0').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','all');
 		  myChart.data = data_sub;
-		  myChart.draw();			
-		});	
-			 
+		  myChart.draw();
+		 );		 
 		d3.select('#btn1').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','0');			 
 		  myChart.data = data_sub;			 
-		  myChart.draw();	
-	    });	
-			 
+		  myChart.draw();
+		});	
 		d3.select('#btn2').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','10');			 
 		  myChart.data = data_sub;			 
-		  myChart.draw();	 
-        });	
-					
+		  myChart.draw();
+		);				
 		d3.select('#btn3').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','20');
 		  myChart.data = data_sub;			
-		  myChart.draw();			 		 
-        });	
-		
+		  myChart.draw();
+		});	
 		d3.select('#btn4').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','30');			
 		  myChart.data = data_sub;			 
 		  myChart.draw();
 		});		
-		
 		d3.select('#btn5').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','40');			
 		  myChart.data = data_sub;			 
 		  myChart.draw();
-		});		
-			
+		});	
         d3.select('#btn6').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','50');			
 		  myChart.data = data_sub;			 
 		  myChart.draw();
-		});	
-		
-		
-		
+		});			
 		d3.select('#btn7').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','60');			
 		  myChart.data = data_sub;			 
 		  myChart.draw();
 		});	
-		
 		d3.select('#btn8').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','70');			
 		  myChart.data = data_sub;			 
 		  myChart.draw();
 		});
-		
         d3.select('#btn9').on('click', function() {		    
 		  data_sub = dimple.filterData(data,'Agegroup','80');			
 		  myChart.data = data_sub;			 
 		  myChart.draw();
 		});
-		
-		myChart.legends = [];
-		  
-		
+		myChart.legends = [];		
       };
 
     </script>
@@ -141,7 +126,7 @@
 	<button id='btn0'>ALL</button>
 	<button id='btn1'>age 0s</button>
 	<button id='btn2'>age 10s</button>
-    <button id='btn3'>age 20s</button>
+	<button id='btn3'>age 20s</button>
 	<button id='btn4'>age 30s</button>
 	<button id='btn5'>age 40s</button>
 	<button id='btn6'>age 50s</button>
@@ -149,11 +134,11 @@
 	<button id='btn8'>age 70s</button>
 	<button id='btn9'>age 80s</button>
   <script type='text/javascript'>
-  /*
-    Use D3 (not dimple.js) to load the CSVfile
-    and pass the contents of it to the draw function
-    */
-  d3.csv('titanic_age_fare_group.csv', draw);
+    /*
+      Use D3 (not dimple.js) to load the CSVfile
+      and pass the contents of it to the draw function
+      */
+    d3.csv('titanic_age_fare_group.csv', draw);
   
   
   </script>
