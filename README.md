@@ -14,6 +14,8 @@ Followed first feedback, The major revision in second version is adding summary 
 Here's my second version: http://bl.ocks.org/Maggiebj/99852d12304e0c8090cf59582491e8bb
 Followed the second and third feedback, I revised the plot by showing summary of fare in one plot,and switch plots by each age group.
 Here's my third version: http://bl.ocks.org/Maggiebj/29bd0a199629d1fba11a37327b2206e0
+Followed the forth feedback, I changed back to use barchart to show the comparasion of survival rate.
+Here's my third version: http://bl.ocks.org/Maggiebj/74cd2bd45deb0e3a7795f1a6794436f4
 
 ## Feedback -
 ###From Myles (Forum Mentor),feedback for the first version:
@@ -36,6 +38,11 @@ Use a box plot to show a fuller picture of the comparison of the full spectrum o
 
 ###From Andy (DAND student), feedback for the second version:
 It is confusing to show quantile data in different plot, it may be better to show statistic summary in one plot. Should the age group in button be better?
+
+###From first review,feedback for the third version:
+When we want to compare something (in this case prices for survived and perished) bars are still the best solution(explore this for more details) Dots will be more suitable for distribution charts
+Explanatory part is implemented here, however, such chart does not provide you lots of exploratory possibilities (remember martini glass principles)
+If you want to show the difference for survival rate and ticket price you can create bar chart where Y axis will be percentage survival rate and x-axis will be grouped prices, e.g. 0-25, 25-50 and so on
 
 ## Resources - 
 some dimple and d3 examples and documents: 
